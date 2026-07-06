@@ -44,6 +44,7 @@ core/frontend/.claude/
 # Frontend dev artifacts
 core/frontend/.pnpm-store/
 core/frontend/coverage/
+core/frontend/src/styles/uno.generated.css
 
 # Python
 __pycache__/

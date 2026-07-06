@@ -1,10 +1,13 @@
 import { globSync } from 'glob'
 import { defineConfig } from 'unocss'
 import path from 'path'
+import { readFileSync } from 'fs'
 import presetUno from '@unocss/preset-uno'
 import presetIcons from '@unocss/preset-icons'
 import transformerDirectives from '@unocss/transformer-directives'
 import { FileSystemIconLoader } from '@iconify/utils/lib/loader/node-loaders'
+
+const iconRE = /\bi-(?:custom|fa|icon-park-outline|mdi|ri)(?::[a-z0-9-]+|-[a-z0-9-]+)\b/g
 
 function getIcons() {
 	const icons = {}
@@ -21,6 +24,17 @@ function getIcons() {
 	return icons
 }
 
+function getIconSafelist() {
+	const icons = new Set<string>()
+	const files = globSync('src/**/*.{vue,ts,tsx,jsx}', { nodir: true })
+	files.forEach(filePath => {
+		const content = readFileSync(filePath, 'utf-8')
+		const matches = content.match(iconRE) || []
+		matches.forEach(icon => icons.add(icon))
+	})
+	return Array.from(icons)
+}
+
 const icons = getIcons()
 const collections = Object.fromEntries(
 	Object.keys(icons).map(item => [item, FileSystemIconLoader(`src/assets/icons/${item}`)])
@@ -28,8 +42,9 @@ const collections = Object.fromEntries(
 
 export default defineConfig({
 	content: {
-		filesystem: ['src/**/*.{vue,tsx,jsx}'],
+		filesystem: ['src/**/*.{vue,ts,tsx,jsx}'],
 	},
+	safelist: getIconSafelist(),
 	presets: [
 		presetUno({ preflight: false }),
 		presetIcons({
