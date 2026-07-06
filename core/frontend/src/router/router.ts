@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import { is, isDev } from '@/utils'
+import { sortRoutesByReflectList } from './sort'
 
 // Routes reflect list
 const routesReflectList = [
@@ -39,11 +40,7 @@ for (const path of modules.keys()) {
 }
 
 // Sort module routes
-menuList = menuList.reduce((p: RouteRecordRaw[], v: RouteRecordRaw) => {
-	const routeIndex = routesReflectList.findIndex(item => item == v.meta!.title)
-	p[routeIndex] = v
-	return p
-}, [] as RouteRecordRaw[])
+menuList = sortRoutesByReflectList(menuList, routesReflectList)
 
 const otherArray: RouteRecordRaw[] = []
 
