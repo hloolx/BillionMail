@@ -3,7 +3,7 @@ FROM debian:bookworm-slim
 LABEL maintainer="https://github.com/aaPanel/BillionMail"
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG RSPAMD_VER=rspamd_3.11.1-1~ab0b44951
+ARG RSPAMD_VER=rspamd_3.14.3-1~236eb65
 ARG CODENAME=bookworm
 ENV LC_ALL=C
 
@@ -22,16 +22,16 @@ RUN apt-get update && apt-get install -y \
   dnsutils \
   netcat-traditional \
   wget \
-  redis-tools \ 
-  procps \ 
+  redis-tools \
+  procps \
   vim-tiny \
   lua-cjson \
   cron \
   supervisor \
   && arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/) \
-  && wget -O /tmp/${RSPAMD_VER}~${CODENAME}_${arch}.deb https://rspamd.com/apt-stable/pool/main/r/rspamd/${RSPAMD_VER}~${CODENAME}_${arch}.deb \
-  && apt install -y /tmp/${RSPAMD_VER}~${CODENAME}_${arch}.deb \
-  && rm -rf /var/lib/apt/lists/* /tmp/*\
+  && wget -O /tmp/rspamd.deb https://rspamd.com/apt-stable/pool/main/r/rspamd/${RSPAMD_VER}~${CODENAME}_${arch}.deb \
+  && apt-get install -y /tmp/rspamd.deb \
+  && rm -rf /var/lib/apt/lists/* /tmp/* \
   && apt-get autoremove --purge \
   && apt-get clean \
   && mkdir -p /run/rspamd \
